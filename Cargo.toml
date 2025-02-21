@@ -2,6 +2,12 @@
 name = "words"
 version = "0.1.0"
 edition = "2024"
+repository = "https://github.com/t-webber/words_perso"
+license-file = "LICENSE"
+readme = "README.md"
+description = "Scrapes the wiktionary for the definition of the 150000 most used english words"
+keywords = ["scraper", "html"]
+categories = ["scraper", "html"]
 
 [dependencies]
 html_parser = { git = "https://github.com/t-webber/html-parser" }

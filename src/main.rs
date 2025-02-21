@@ -1,9 +1,40 @@
+//! Scrapes the wiktionary for the definition of the 150000 most used english
+//! words.
+
+#![warn(
+    missing_docs,
+    warnings,
+    deprecated_safe,
+    future_incompatible,
+    keyword_idents,
+    let_underscore,
+    nonstandard_style,
+    refining_impl_trait,
+    rust_2018_compatibility,
+    rust_2018_idioms,
+    rust_2021_compatibility,
+    rust_2024_compatibility,
+    unused,
+    clippy::all,
+    clippy::pedantic,
+    clippy::style,
+    clippy::perf,
+    clippy::complexity,
+    clippy::correctness,
+    clippy::restriction,
+    clippy::nursery,
+    clippy::cargo
+)]
+#![expect(
+    clippy::blanket_clippy_restriction_lints,
+    reason = "I want all the lints"
+)]
+#![expect(clippy::single_call_fn, clippy::implicit_return, reason = "bad lint")]
 #![feature(let_chains)]
 
-use std::fs::read_to_string;
+mod word_generator;
 
-use html_parser::prelude::{Html, parse_html};
-
+/// Paths to the lists of words
 const LIST_PATHS: [&str; 16] = [
     "data/lists/001-010.html",
     "data/lists/011-020.html",
@@ -23,43 +54,7 @@ const LIST_PATHS: [&str; 16] = [
     "data/lists/151-157.html",
 ];
 
-struct Word {
-    href: String,
-    word: String,
-}
-
-fn parse_list(list_path: &str) -> Vec<Word> {
-    let list = read_to_string(list_path)
-        .unwrap_or_else(|err| panic!("No such file or directory: {list_path}.\n{err}"));
-
-    let html = parse_html(&list).unwrap();
-    if let Html::Vec(vec) = html {
-        vec.into_iter()
-            .filter_map(|link| {
-                if let Html::Tag { tag, child, .. } = link
-                    && let Some(href) = tag.into_attr_value("href")
-                    && let Html::Text(word) = *child
-                {
-                    Some(Word { word, href })
-                } else {
-                    None
-                }
-            })
-            .collect()
-    } else {
-        unreachable!("Invalid input")
-    }
-}
-
-fn parse_lists(list_paths: &[&str]) -> Vec<Word> {
-    let mut words = Vec::with_capacity(list_paths.len() * 10_000);
-    for list_path in list_paths {
-        words.extend(parse_list(list_path));
-    }
-    words
-}
-
 fn main() {
-    let words = parse_lists(&LIST_PATHS);
+    let words = word_generator::parse_lists(&LIST_PATHS);
     dbg!(words.len());
 }
