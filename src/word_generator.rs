@@ -40,33 +40,29 @@ impl HrefWord {
 }
 
 /// Parses a list of words in the html format
-fn parse_list(list_path: &str) -> Vec<HrefWord> {
+fn parse_list(list_path: &str, words: &mut Vec<HrefWord>) {
     let list = read_to_string(list_path)
         .unwrap_or_else(|err| panic!("No such file or directory: {list_path}.\n{err}"));
     let html = parse_html(&list).unwrap_or_else(|err| panic!("Invalid input.\n{err}"));
     if let Html::Vec(vec) = html {
-        vec.into_iter()
-            .filter_map(|link| {
-                if let Html::Tag { tag, child, .. } = link
-                    && let Some(href) = tag.into_attr_value("href")
-                    && let Html::Text(word) = *child
-                {
-                    Some(HrefWord { href, word })
-                } else {
-                    None
-                }
-            })
-            .collect()
+        for link in vec {
+            if let Html::Tag { tag, child, .. } = link
+                && let Some(href) = tag.into_attr_value("href")
+                && let Html::Text(word) = *child
+            {
+                words.push(HrefWord { href, word });
+            }
+        }
     } else {
         panic!("Invalid input")
     }
 }
 
 /// Parses a list of HTML files that contain lists of words
-pub fn parse_lists(list_paths: &[&str]) -> Vec<HrefWord> {
-    let mut words = Vec::with_capacity(list_paths.len() * 10_000);
+pub fn parse_lists(list_paths: &[&str]) -> Box<[HrefWord]> {
+    let mut words = Vec::with_capacity(155_760.min(list_paths.len() * 10_000));
     for list_path in list_paths {
-        words.extend(parse_list(list_path));
+        parse_list(list_path, &mut words);
     }
-    words
+    words.into_boxed_slice()
 }

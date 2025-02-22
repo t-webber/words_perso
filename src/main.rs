@@ -66,13 +66,13 @@ const LIST_PATHS: [&str; 16] = [
 
 fn main() {
     println!("Extracting words...");
-    let words = word_generator::parse_lists(&LIST_PATHS);
-    println!("Found {} words", words.len());
+    let href_words = word_generator::parse_lists(&LIST_PATHS);
+    println!("Found {} words", href_words.len());
 
     #[cfg(feature = "lists")]
     println!("Generating lists...");
-    list_generator::generate_lists(&words);
+    list_generator::generate_lists(&href_words);
 
     println!("Fetching definitions lists...");
-    def_downloader::get_definitions(&words);
+    let _defined_words = def_downloader::get_definitions(href_words);
 }
