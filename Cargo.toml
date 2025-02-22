@@ -13,5 +13,4 @@ categories = ["scraper", "html"]
 html_parser = { git = "https://github.com/t-webber/html-parser" }
 
 [features]
-debug = []
-download = []
+lists = []

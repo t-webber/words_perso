@@ -18,6 +18,16 @@ pub struct HrefWord {
     pub word: String,
 }
 
+impl HrefWord {
+    /// Check if a word has valid link, i.e. that the definition exists
+    ///
+    /// The [`HrefWord`] is considered valid iff the link is valid, i.e., iff
+    /// the definition exists on the wiktionary.
+    pub fn is_valid(&self) -> bool {
+        self.href.starts_with("/wiki/")
+    }
+}
+
 /// Parses a list of words in the html format
 fn parse_list(list_path: &str) -> Vec<HrefWord> {
     let list = read_to_string(list_path)

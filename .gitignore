@@ -4,3 +4,4 @@ target
 *.html
 !data/lists/*.html
 *.txt
+!data/txt/*.txt

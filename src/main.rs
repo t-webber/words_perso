@@ -32,6 +32,7 @@
 #![expect(clippy::single_call_fn, clippy::implicit_return, reason = "bad lint")]
 #![feature(let_chains)]
 
+mod list_generator;
 mod word_generator;
 
 /// Paths to the lists of words
@@ -56,5 +57,7 @@ const LIST_PATHS: [&str; 16] = [
 
 fn main() {
     let words = word_generator::parse_lists(&LIST_PATHS);
-    dbg!(words.len());
+
+    #[cfg(feature = "lists")]
+    list_generator::generate_lists(&words);
 }
