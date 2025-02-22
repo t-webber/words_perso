@@ -41,7 +41,9 @@
 #![feature(let_chains)]
 
 mod def_downloader;
+mod extract_english;
 mod list_generator;
+mod read_write;
 mod word_generator;
 
 /// Paths to the lists of words
@@ -70,9 +72,14 @@ fn main() {
     println!("Found {} words", href_words.len());
 
     #[cfg(feature = "lists")]
-    println!("Generating lists...");
-    list_generator::generate_lists(&href_words);
+    {
+        println!("Generating lists...");
+        list_generator::generate_lists(&href_words);
+    };
 
     println!("Fetching definitions lists...");
-    let _defined_words = def_downloader::get_definitions(href_words);
+    let defined_words = def_downloader::get_definitions(href_words);
+
+    println!("Extracting english definitions...");
+    extract_english::extract_english(defined_words);
 }
