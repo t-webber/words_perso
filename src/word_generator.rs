@@ -26,6 +26,17 @@ impl HrefWord {
     pub fn is_valid(&self) -> bool {
         self.href.starts_with("/wiki/")
     }
+
+    /// Returns an appropriate path to store the word's definition
+    pub fn to_path(&self) -> String {
+        format!("data/defs/{}.html", self.word.replace('/', "-slash-"))
+    }
+
+    /// Returns the full URL to the definition of the word
+    pub fn to_url(&self) -> Option<String> {
+        self.is_valid()
+            .then(|| format!("https://en.wiktionary.org/{}", self.href))
+    }
 }
 
 /// Parses a list of words in the html format

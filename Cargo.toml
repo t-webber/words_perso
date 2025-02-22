@@ -11,6 +11,8 @@ categories = ["scraper", "html"]
 
 [dependencies]
 html_parser = { git = "https://github.com/t-webber/html-parser" }
+reqwest = { version = "0.12.12", features = ["blocking"] }
 
 [features]
 lists = []
+download = []

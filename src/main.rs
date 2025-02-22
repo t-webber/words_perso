@@ -25,13 +25,22 @@
     clippy::nursery,
     clippy::cargo
 )]
+#![expect(clippy::multiple_crate_versions, reason = "dependencies need this")]
 #![expect(
     clippy::blanket_clippy_restriction_lints,
     reason = "I want all the lints"
 )]
-#![expect(clippy::single_call_fn, clippy::implicit_return, reason = "bad lint")]
+#![expect(
+    clippy::single_call_fn,
+    clippy::implicit_return,
+    clippy::question_mark_used,
+    clippy::integer_division_remainder_used,
+    reason = "bad lint"
+)]
+#![expect(clippy::print_stdout, reason = "logging")]
 #![feature(let_chains)]
 
+mod def_downloader;
 mod list_generator;
 mod word_generator;
 
@@ -56,8 +65,14 @@ const LIST_PATHS: [&str; 16] = [
 ];
 
 fn main() {
+    println!("Extracting words...");
     let words = word_generator::parse_lists(&LIST_PATHS);
+    println!("Found {} words", words.len());
 
     #[cfg(feature = "lists")]
+    println!("Generating lists...");
     list_generator::generate_lists(&words);
+
+    println!("Fetching definitions lists...");
+    def_downloader::get_definitions(&words);
 }
